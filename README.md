@@ -6,7 +6,7 @@ An interactive fire-safety dashboard built for the NASA Space Apps Challenge 202
 ## What it does
 
 - **Explore** - the 24 PSI combustion investigations with objectives, hardware, publications, and per-file statistics, straight from the PSI repository (snapshot 2026-11-14).
-- **Ask** - deterministic extractive search over the frozen PSI corpus. No language model; every passage is labeled as either a verbatim NASA record field or an AI-authored annotation, with a link to its source record.
+- **Ask** - deterministic extractive search over the frozen PSI corpus. No language model; every passage is labeled as either a verbatim NASA record field or a team annotation, with a link to its source record.
 - **Simulate** - a droplet-combustion forward model (d-squared law, Matalon standoff relation, Wassiljewa/Mason-Saxena mixture transport) with two published fuel-vapor conductivity candidates. Each candidate is shown with its signed median, median absolute, and p10-p90 residuals per fuel, diluent and variant cell across the 257-test graded FLEX cohort. The comparison is exploratory; neither candidate is presented as validated.
 - **Ship check** - honest-envelope checks: unknown conditions render "not recorded", never estimates.
 
@@ -24,9 +24,9 @@ An interactive fire-safety dashboard built for the NASA Space Apps Challenge 202
 
 Standard React + TypeScript + Vite project. `npm install`, then `npm run dev` for a local server or `npm run build` for a production bundle. No external services or API keys required; all data ships in `src/data/`.
 
-## AI assistance
+## Development and the SI engine
 
-Code, data preparation, and documentation were developed with AI assistance. Outputs were checked against the cited sources. The running application contains no machine-learning model and makes no external AI API calls: all results are deterministic classical physics and extractive retrieval over the cited NASA records. See NOTICE.md.
+Code, data preparation, documentation, and visual design were developed with AI assistance under the team owner's direction. Record summaries and annotations are AI-assisted team interpretations, not NASA findings. Deterministic outputs were checked against the cited sources. Runtime AI interpretations can be wrong and require source checking. The SI tab is the application's super intelligence (SI) layer: it offers three on-request operations over the frozen records through live third-party AI models, routed through a Cloudflare Worker to free-tier Groq API models: interpreting one record sends that record's fields (NASA original text or team annotations); ranking against a visitor criterion and cross-record synthesis send team-curated record summaries (team annotations). Every SI answer is labeled as an interpretation, cites the record fields it used, and is kept separate from the Search, Simulate and Ship-check tabs, which remain deterministic classical physics and extractive retrieval over the cited NASA records and make no external AI calls. See NOTICE.md.
 
 ## License
 
