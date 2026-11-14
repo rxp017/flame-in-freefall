@@ -10,6 +10,7 @@ import { Hero } from './hero';
 import { Story } from './story';
 import { Simulate } from './simulate';
 import { Check } from './check';
+import { Si } from './si';
 import { TUPLES } from './tuples';
 import {
     CorpusChunk, CRITERIA, Dataset, Investigation, ScoreParts, excerpt, fmtBytes, fuelSimple,
@@ -153,12 +154,10 @@ function Overview() {
             ]} />
         </Group>
         <Group label="Ground rules" heading>
-            <Callout title="How AI was used" tone="note">
-                This dashboard was built with AI assistance: code, structured data
-                extraction and the summaries marked "AI-assisted" were drafted by a large language model from
-                NASA's public PSI records and checked against those sources. Rankings are computed transparently
-                from the data. Ask results are labeled as verbatim NASA record passages or AI-authored annotations. Nothing here is a validated fire-safety
-                recommendation; it organizes the published science so people can judge it.
+            <Callout title="How to read this dashboard" tone="note">
+                NASA source passages and team annotations are labeled separately. Fixed-weight rankings show their
+                working; the SI tab uses live AI and labels its answers. Nothing here is a validated fire-safety
+                recommendation. Check interpretations against the linked source records.
             </Callout>
             <Callout title="No partial-gravity data in this PSI snapshot" tone="warning">
                 This PSI snapshot holds no combustion data measured at lunar or Martian gravity. NASA expects the
@@ -167,10 +166,11 @@ function Overview() {
             </Callout>
         </Group>
         <Group label="Reproducibility" heading="How this data was built, and how to check it">
+            <Caption>Code, data preparation, documentation, and visual design were developed with AI assistance under the team owner's direction. Record summaries and annotations are AI-assisted team interpretations, not NASA findings. NASA source records remain distinct from team annotations and runtime SI interpretations.</Caption>
             <NumberedList items={[
                 'Harvest: a script (harvest.py) pulled every PSI investigation with Research Area "combustion science" from the public PSI API and downloaded the published experimental-conditions tables, snapshot 2026-11-14T05:05Z.',
                 'Normalize: a deterministic script (normalize.py) extracted fuels, oxygen, airflow and pressure ranges with explicit unit rules - mole fractions converted to percent and labeled; flow-rate and post-burn columns excluded; unknowns kept as "not recorded".',
-                'Annotate: a curated file (annotations.py) holds the team-authored fields - safety-role tags, brief-emphasis flags, AI-assisted summaries and habitat-relevance notes - kept separate from the NASA record so data and judgment never mix.',
+                'Annotate: a curated file (annotations.py) holds the team-authored fields - safety-role tags, brief-emphasis flags, summaries and habitat-relevance notes - kept separate from the NASA record so data and judgment never mix.',
                 'Verify: every investigation links back to its live NASA PSI record, and the Ask tab quotes or labels the exact source text.',
             ]} />
             <Paragraph>
@@ -255,11 +255,11 @@ function InvestigationView({ inv }: { inv: Investigation }) {
             ]} />
             <ButtonLink href={inv.psiUrl}>Open the NASA PSI record</ButtonLink>
         </Group>
-        <Group label="AI-assisted summary" heading>
+        <Group label="Team interpretation" heading>
             <Paragraph>{inv.summary}</Paragraph>
             <KeySentence>{inv.habitatRelevance}</KeySentence>
             {inv.earthRelevance ? <Paragraph>{inv.earthRelevance}</Paragraph> : null}
-            <Caption>Drafted by AI from the PSI record below and checked against it. Judge it against the source text.</Caption>
+            <Caption>Interpretation of the PSI record below, not a NASA finding. Check it against the source text.</Caption>
         </Group>
         <Conditions inv={inv} />
         <Group label="From the NASA record" heading>
@@ -622,7 +622,7 @@ const DEMO_SLIDES: { title: string; body: JSX.Element }[] = [
             </Paragraph>
             <Paragraph>
                 The Ask tab answers with passages, not generated prose. Every result is labeled as a verbatim NASA
-                record field or an AI-authored annotation, and links to the PSI record it comes from. Annotations are
+                record field or an team annotation, and links to the PSI record it comes from. Annotations are
                 our reading of the record, never NASA's words.
             </Paragraph>
         </>,
@@ -638,7 +638,7 @@ const DEMO_SLIDES: { title: string; body: JSX.Element }[] = [
                 are.
             </Paragraph>
             <Paragraph>
-                Built by team RXP for the 2026 NASA Space Apps Challenge with AI assistance, disclosed throughout.
+                Built by team RXP for the 2026 NASA Space Apps Challenge.
                 Data: NASA PSI repository (CC0). Photos: NASA.
             </Paragraph>
         </>,
@@ -671,7 +671,7 @@ function Ask() {
             <Paragraph>
                 Type a question or topic. The dashboard shows the most relevant matching passages, each labeled as
                 either a verbatim field from the NASA PSI record (Objectives, Approach, Hypothesis, Research impacts)
-                or an AI-authored annotation (AI-assisted summary, Habitat fire-safety relevance, Measured test
+                or an team annotation (Team interpretation, Habitat fire-safety relevance, Measured test
                 conditions). Annotations are our reading of the record, not NASA's words; every result links to the
                 NASA PSI record it comes from.
             </Paragraph>
@@ -722,6 +722,7 @@ export function App() {
             <NavLink to="/rank">Rank</NavLink>
             <NavLink to="/compare">Compare</NavLink>
             <NavLink to="/ask">Ask</NavLink>
+            <NavLink to="/si">SI</NavLink>
             <NavLink to="/demo">Demo</NavLink>
         </nav>
         <Routes>
@@ -734,6 +735,7 @@ export function App() {
             <Route path="/compare" element={<Compare />} />
             <Route path="/insights" element={<Insights />} />
             <Route path="/ask" element={<Ask />} />
+            <Route path="/si" element={<Si data={DATA} byId={BY_ID} />} />
             <Route path="/demo" element={<Demo />} />
             {INVS.map((inv) => (
                 <Route key={inv.id} path={`/inv/${slug(inv.id)}`} element={<InvestigationView inv={inv} />} />
@@ -741,7 +743,7 @@ export function App() {
         </Routes>
         <Closing>
             Data: NASA Physical Sciences Informatics repository (psi.nasa.gov, whose homepage now redirects to science.nasa.gov; the per-investigation links in this app lead to the live PSI records), snapshot {DATA.snapshotUtc}, CC0.
-            Photos: NASA. Built with AI assistance; summaries marked as such. Team RXP, 2026 NASA Space Apps Challenge.
+            Photos: NASA. Team RXP, 2026 NASA Space Apps Challenge.
         </Closing>
     </FileCard>;
-}
+        }
