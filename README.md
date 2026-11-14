@@ -30,4 +30,4 @@ Code, data preparation, and documentation were developed with AI assistance. Out
 
 ## License
 
-(license choice pending - do not assume one)
+Copyright 2026 Raja Shekar. Licensed under the Apache License, Version 2.0 - see LICENSE. Third-party notices and data-source attributions are in NOTICE.md.
