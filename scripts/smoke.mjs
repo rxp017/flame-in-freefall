@@ -30,7 +30,7 @@ console.log(JSON.stringify({ textLen: text.length, checks }));
 if (!checks.rendered || !checks.hasSimulateNav) { console.log('FAIL', text.slice(0, 300)); process.exit(1); }
 console.log('HOME PASS');
 
-for (const route of ['#/story', '#/simulate', '#/check', '#/explore', '#/insights', '#/rank', '#/compare', '#/ask', '#/demo']) {
+for (const route of ['#/story', '#/simulate', '#/check', '#/explore', '#/insights', '#/rank', '#/compare', '#/ask', '#/si', '#/demo']) {
     w.location.hash = route;
     w.dispatchEvent(new w.Event('hashchange'));
     await new Promise((r) => setTimeout(r, 400));
