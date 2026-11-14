@@ -1,0 +1,13 @@
+# SI deployment
+
+Deploy this directory with Wrangler on the Workers Free plan. Do not enable billing or attach a payment method.
+
+Set GROQ_API_KEY as a Worker secret (Groq console API key for the project's own Groq account). Never commit secrets.
+
+The SQLite-backed BudgetDO namespace stores atomic daily conservative attempt reservations and validated answers. Workers Free limits fail closed. A storage error prevents new inference. The provider free quota remains the final account-wide limit. Daily counters reset at 00:00 UTC. A 4500-neuron conservative app debit cap constrains fresh inference. The six-fresh-request per-IP daily allowance is TEMPORARILY lifted for owner-authorized QA (owner instruction 2026-11-14): the admission line is removed from the deployed source, the per-IP counter still increments for honest accounting, and a public abuse policy review is required before release - do not treat the lift as the release posture. Reservations use UTF-8 input bytes as a token upper bound plus framing allowance, the per-kind maximum output tokens (1024 for investigate, 1536 for rank/synthesize), and the highest rates of the configured models. A separate per-model minute pace estimate (input chars/4 + 512 + the same output bound) is checked against the 8,000-token provider TPM window and replaced by the measured total at settle. Failed calls keep their entire reservation; known provider-metered usage settles atomically and unused reservation is refunded; failed or unmeasured calls retain the full reservation. This deliberately allows fewer real calls than a usage estimate. IP-based fairness is not identity verification and, while the allowance is enabled, shared-IP visitors share an allowance.
+
+Answers are schema-checked, require a complete finish, known IDs, and verbatim source evidence. These checks do not prove semantic correctness. Only validated answers are stored. Stored interpretations can be read without new inference while storage is available; no cache lifetime or universal availability is promised. Source version changes invalidate the answer key.
+
+Bounded waterfall, configured in GROQ_MODELS: qwen/qwen3.8-27b, openai/gpt-oss-20b, openai/gpt-oss-120b. The order is a quota/reliability choice from observed live results, not a capability ranking. Each attempt reserves separately; provider quota is per model, so an HTTP 429 falls through to the next tier while credential failures (401/403) stop the waterfall. A daily allowance, provider quota, validation failure, or storage outage may prevent a fresh answer. Search and physics simulation remain deterministic and usable.
+
+No paid services, public publication, or resubmission is authorized by this runbook.
